@@ -1,42 +1,29 @@
 <template>
 	<div
 		class="container w-full max-w-[940px] h-full md:h-2/3 bg-white rounded-xl shadow-lg transition-all duration-500 ease-in-out flex flex-col md:flex-row"
-		:style="{ backgroundColor: containerBackgroundColor }"
+		:style="{ backgroundColor: currentComponent.backgroundColor }"
 	>
 		<div
 			class="stepper w-full md:w-[280px] flex-1 md:flex-[0.3] h-full relative transition-all duration-300 ease-in-out"
 		>
-			<div class="flex flex-row md:flex-col gap-4 md:gap-8 h-full">
+			<div class="flex flex-col gap-4 md:gap-8 h-full p-2">
 				<!-- Responsive gap and padding -->
 				<div
 					v-for="step in stepList"
 					:key="step.id"
-					class="cursor-pointer transition-colors duration-200 ease-in-out flex-1 flex items-center md:justify-start p-2"
-					:class="{ 'bg-blue-300 rounded-md border': isActiveStep(step.id) }"
+					class="cursor-pointer transition-colors duration-200 ease-in-out flex-1 flex items-center justify-center md:justify-start p-2"
 					@click="changeStep(step.id)"
 				>
 					<div class="flex items-center gap-2">
-						<div
-							:class="`step-circle w-6 h-6 md:w-8 md:h-8 rounded-full border ${
-								isActiveStep(step.id) ? 'bg-blue-500' : 'bg-white'
-							} transition-colors duration-300`"
-						>
+						<div class="transition-colors duration-300">
 							<div
-								class="w-full h-full flex justify-center items-center text-xs md:text-sm"
-								:class="{
-									'text-white font-bold': isActiveStep(step.id),
-									'text-gray-700 font-medium': !isActiveStep(step.id),
-								}"
+								class="step-number h-full flex justify-center items-center text-xs md:text-sm font-medium text-gray-700"
+								:class="{ 'step-number-active': currentStep === step.id }"
 							>
 								{{ step.id }}
 							</div>
 						</div>
 						<div>
-							<div
-								class="step-label text-xs text-gray-500 uppercase transition-colors duration-300"
-							>
-								Step {{ step.id }}
-							</div>
 							<div
 								class="step-title text-sm font-bold text-gray-900 uppercase transition-colors duration-300"
 							>
@@ -48,18 +35,44 @@
 			</div>
 		</div>
 
-		<div class="m-2 ml-5 content-area flex-1 transition-all duration-500">
+		<div class="flex-1 transition-all duration-500">
 			<!-- Smooth transitions and responsive padding -->
 			<transition name="fade" mode="out-in" appear>
 				<div
 					class="content rounded-2xl shadow-lg bg-white px-4 flex flex-col justify-between w-full h-full transition-transform duration-500"
 					:key="currentStep"
 				>
-					<!-- Responsive layout for different step components -->
-					<StepOneComponent v-if="currentStep === 1" @change-step="changeStep" />
-					<StepTwoComponent v-if="currentStep === 2" @change-step="changeStep" />
-					<StepThreeComponent v-if="currentStep === 3" @change-step="changeStep" />
-					<ConfirmComponent v-if="currentStep === 0" />
+					<div
+						class="container flex flex-col justify-between w-full h-full transition-all duration-500 ease-in-out"
+					>
+						<div class="header">
+							<h1 class="title text-2xl md:text-4xl font-bold text-primary mb-2">
+								Step: {{ currentComponent.title }}
+							</h1>
+							<p class="description text-base text-muted mb-6">
+								{{ currentComponent.description }}
+							</p>
+						</div>
+						<component :key="currentStep" :is="currentComponent.component" />
+						<div
+							class="flex justify-between items-center w-full absolute bottom-[-146px] right-0 pb-4 md:static"
+						>
+							<button
+								:class="{ disabled: currentStep === 1 }"
+								class="text-sm md:text-body capitalize brand-medium text-emerald-700 font-semibold"
+								@click="currentStep !== 1 && currentStep--"
+							>
+								previous
+							</button>
+							<button
+								:class="{ 'disabled bg-neutral-400': currentStep === 3 }"
+								class="h-10 md:h-12 px-4 md:px-6 capitalize brand-regular text-sm md:text-body text-brand-alabaster bg-emerald-700 rounded md:rounded-lg"
+								@click="currentStep !== 3 && currentStep++"
+							>
+								next
+							</button>
+						</div>
+					</div>
 				</div>
 			</transition>
 		</div>
@@ -68,37 +81,41 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import StepOneComponent from "./StepOneComponent.vue";
-import StepTwoComponent from "./StepTwoComponent.vue";
-import StepThreeComponent from "./StepThreeComponent.vue";
-import ConfirmComponent from "./ConfirmComponent.vue";
+import usernameComponent from "./usernameComponent.vue";
+import emailComponent from "./emailComponent.vue";
+import reviewComponent from "./usernameComponent.vue";
 
 const currentStep = ref(1);
-
+const currentComponent = computed(() => {
+	return stepList.find((step) => step.id === currentStep.value);
+});
 const stepList = [
-	{ id: 1, title: "Your Info" },
-	{ id: 2, title: "Select Plan" },
-	{ id: 3, title: "Add-Ons" },
+	{
+		id: 1,
+		title: "Username",
+		description: "Please enter your username",
+		component: usernameComponent,
+		backgroundColor: "#E3F2FD",
+	}, // Light blue
+	{
+		id: 2,
+		title: "Email",
+		description: "Please enter your email",
+		component: emailComponent,
+		backgroundColor: "#C8E6C9",
+	}, // Light green
+	{
+		id: 3,
+		title: "Review",
+		description: " Review",
+		component: reviewComponent,
+		backgroundColor: "#FFECB3",
+	}, // Light yellow
 ];
 
 const changeStep = (step: number) => {
 	currentStep.value = step;
 };
-
-const isActiveStep = (stepId: number): boolean => currentStep.value === stepId;
-
-const containerBackgroundColor = computed(() => {
-	switch (currentStep.value) {
-		case 1:
-			return "#E3F2FD"; // Light blue
-		case 2:
-			return "#FFECB3"; // Light yellow
-		case 3:
-			return "#C8E6C9"; // Light green
-		default:
-			return "#FFFFFF"; // Default white
-	}
-});
 </script>
 
 <style scoped>
@@ -123,6 +140,9 @@ const containerBackgroundColor = computed(() => {
 .step-label,
 .step-title {
 	transition: color 0.3s ease-in-out;
+}
+.step-title {
+	margin-left: 30px;
 }
 
 .fade-enter-active,
@@ -149,5 +169,19 @@ const containerBackgroundColor = computed(() => {
 	.content-area {
 		padding: 8px;
 	}
+}
+.step-number {
+	scale: 10;
+	translate: 5px;
+	opacity: 50%;
+	width: 35px;
+	transition: all 0.3s;
+}
+.step-number-active {
+	opacity: 80%;
+}
+button.disabled {
+	color: #010101;
+	cursor: not-allowed;
 }
 </style>
