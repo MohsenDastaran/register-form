@@ -53,14 +53,18 @@
 								{{ currentComponent.description }}
 							</p>
 						</div>
-						<component :key="currentStep" :is="currentComponent.component" />
-						<div
-							class="flex justify-between items-center w-full absolute bottom-[-146px] right-0 pb-4 md:static"
-						>
+						<component
+							:key="currentStep"
+							:is="currentComponent.component"
+							@edit="currentStep = 1"
+						/>
+						<Description />
+						<div class="flex justify-between items-center w-full pb-4 md:static">
 							<button
 								:class="{ disabled: currentStep === 1 }"
 								class="text-sm md:text-body capitalize brand-medium text-emerald-700 font-semibold"
 								@click="currentStep !== 1 && currentStep--"
+								id="btn-prev"
 							>
 								previous
 							</button>
@@ -68,6 +72,7 @@
 								:class="{ 'disabled bg-neutral-400': currentStep === 3 }"
 								class="h-10 md:h-12 px-4 md:px-6 capitalize brand-regular text-sm md:text-body text-brand-alabaster bg-emerald-700 rounded md:rounded-lg"
 								@click="currentStep !== 3 && currentStep++"
+								id="btn-next"
 							>
 								next
 							</button>
@@ -81,9 +86,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import usernameComponent from "./usernameComponent.vue";
-import emailComponent from "./emailComponent.vue";
-import reviewComponent from "./usernameComponent.vue";
+import usernameComponent from "../views/usernameComponent.vue";
+import emailComponent from "../views/emailComponent.vue";
+import reviewComponent from "@/views/review.vue";
+import Description from "./Description.vue";
 
 const currentStep = ref(1);
 const currentComponent = computed(() => {

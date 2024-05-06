@@ -1,21 +1,27 @@
 import { defineStore } from "pinia";
 
-interface StateType {
+interface FormType {
 	username: string;
 	email: string;
+	description: string;
 }
 
-export const formStore = defineStore("form", {
-	state: (): StateType => ({
+export const useFormStore = defineStore("form", {
+	state: (): FormType => ({
 		username: "",
 		email: "",
+		description: "",
 	}),
 	actions: {
-		setUserName(username: string) {
+		setUsername(username: string) {
 			this.username = username;
 		},
 		setEmail(email: string) {
 			this.email = email;
+		},
+		setDescription(description: string) {
+			this.description = description;
+			console.log(this.description);
 		},
 	},
 });
