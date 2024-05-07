@@ -25,7 +25,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from "vue";
 import useFormStore from "@/stores/form";
 
 const emit = defineEmits(["edit", "confirm"]);

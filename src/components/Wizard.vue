@@ -11,8 +11,7 @@
 				<div
 					v-for="step in stepList"
 					:key="step.id"
-					class="cursor-pointer transition-colors duration-200 ease-in-out flex-1 flex items-center justify-center md:justify-start p-2"
-					@click="changeStep(step.id)"
+					class="transition-colors duration-200 ease-in-out flex-1 flex items-center justify-center md:justify-start p-2"
 				>
 					<div class="flex items-center gap-2">
 						<div class="transition-colors duration-300">
@@ -59,6 +58,7 @@
 							@edit="currentStep = 1"
 						/>
 						<ErrorMessage />
+						<Description />
 						<div class="flex justify-between items-center w-full pb-4 md:static">
 							<button
 								:class="{ disabled: currentStep === 1 }"
@@ -101,6 +101,7 @@ import reviewComponent from "@/views/review.vue";
 // import Description from "./Description.vue";
 import useFormStore from "@/stores/form";
 import ErrorMessage from "./errorMessage.vue";
+import Description from "./Description.vue";
 
 const currentStep = ref(1);
 const currentComponent = computed(() => {
