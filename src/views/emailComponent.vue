@@ -8,14 +8,19 @@
 
 <script setup lang="ts">
 import customInput from "@/components/customInput.vue";
-import { useFormStore } from "@/stores/form";
+import useFormStore from "@/stores/form";
 import { isValidEmail } from "@/utils/validator";
+
+useFormStore?.setDescription("Invalid email address.");
 
 const setEmail = (email: string) => {
 	if (isValidEmail(email)) {
-		useFormStore()?.setEmail(email);
+		useFormStore.setEmail(email);
+		useFormStore?.setDescription("");
 	} else {
-		console.log("Invalid email");
+		useFormStore.setEmail("");
+
+		useFormStore?.setDescription("Invalid email address.");
 	}
 };
 </script>

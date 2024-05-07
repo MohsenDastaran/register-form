@@ -58,10 +58,11 @@
 							:is="currentComponent.component"
 							@edit="currentStep = 1"
 						/>
-						<Description />
+						<ErrorMessage />
 						<div class="flex justify-between items-center w-full pb-4 md:static">
 							<button
 								:class="{ disabled: currentStep === 1 }"
+								:disabled="currentStep === 1"
 								class="text-sm md:text-body capitalize brand-medium text-emerald-700 font-semibold"
 								@click="currentStep !== 1 && currentStep--"
 								id="btn-prev"
@@ -69,12 +70,20 @@
 								previous
 							</button>
 							<button
-								:class="{ 'disabled bg-neutral-400': currentStep === 3 }"
+								:class="{
+									'disabled bg-neutral-400':
+										currentStep === 3 || Boolean(useFormStore.formState.description),
+								}"
+								:disabled="currentStep === 3"
 								class="h-10 md:h-12 px-4 md:px-6 capitalize brand-regular text-sm md:text-body text-brand-alabaster bg-emerald-700 rounded md:rounded-lg"
-								@click="currentStep !== 3 && currentStep++"
+								@click="
+									currentStep !== 3 &&
+										!Boolean(useFormStore.formState.description) &&
+										currentStep++
+								"
 								id="btn-next"
 							>
-								next
+								{{ useFormStore.formState.description || "next" }}
 							</button>
 						</div>
 					</div>
@@ -89,7 +98,9 @@ import { ref, computed } from "vue";
 import usernameComponent from "../views/usernameComponent.vue";
 import emailComponent from "../views/emailComponent.vue";
 import reviewComponent from "@/views/review.vue";
-import Description from "./Description.vue";
+// import Description from "./Description.vue";
+import useFormStore from "@/stores/form";
+import ErrorMessage from "./errorMessage.vue";
 
 const currentStep = ref(1);
 const currentComponent = computed(() => {
@@ -99,21 +110,21 @@ const stepList = [
 	{
 		id: 1,
 		title: "Username",
-		description: "Please enter your username",
+		description: "Please enter your Username:",
 		component: usernameComponent,
 		backgroundColor: "#E3F2FD",
 	}, // Light blue
 	{
 		id: 2,
 		title: "Email",
-		description: "Please enter your email",
+		description: "Please enter your Email:",
 		component: emailComponent,
 		backgroundColor: "#C8E6C9",
 	}, // Light green
 	{
 		id: 3,
 		title: "Review",
-		description: " Review",
+		description: "Step: review",
 		component: reviewComponent,
 		backgroundColor: "#FFECB3",
 	}, // Light yellow

@@ -5,12 +5,14 @@
 				<h2>Review Your Information</h2>
 				<div class="user-info">
 					<div class="info-item">
-						<span class="info-label">Username:</span>
-						<span class="info-value">{{ useFormStore()?.username }}</span>
+						<span class="info-value">{{
+							`Username: ${useFormStore.formState.username}`
+						}}</span>
 					</div>
 					<div class="info-item">
-						<span class="info-label">Email:</span>
-						<span class="info-value">{{ useFormStore()?.email }}</span>
+						<span class="info-value">{{
+							`Email: ${useFormStore.formState?.email}`
+						}}</span>
 					</div>
 				</div>
 				<div class="action-buttons">
@@ -24,11 +26,10 @@
 
 <script setup lang="ts">
 import { defineEmits } from "vue";
-import { useFormStore } from "@/stores/form";
+import useFormStore from "@/stores/form";
 
 const emit = defineEmits(["edit", "confirm"]);
 
-// Emit events for the edit and confirm actions
 const edit = () => {
 	emit("edit");
 };
@@ -69,14 +70,9 @@ const confirm = () => {
 	padding: 10px 0;
 }
 
-.info-label {
-	font-weight: bold;
-}
-
 .info-value {
 	color: #333;
 }
-
 .action-buttons {
 	display: flex;
 	justify-content: space-between;
